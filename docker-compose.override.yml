@@ -20,7 +20,7 @@ services:
   celery:
     build:
       context: .
-      dockerfile: ./dev/django.Dockerfile
+      dockerfile: ./dev/celery.Dockerfile
     command: [
       "celery",
       "--app", "ts_demo.celery",
@@ -30,6 +30,7 @@ services:
     ]
     # Docker Compose does not set the TTY width, which causes Celery errors
     tty: false
+    privileged: true
     env_file: ./dev/.env.docker-compose
     volumes:
       - .:/opt/django-project
@@ -37,3 +38,9 @@ services:
       - postgres
       - rabbitmq
       - minio
+
+  flower:
+    image: mher/flower
+    command: ["--broker=amqp://rabbitmq:5672/", "--url_prefix=flower"]
+    ports:
+      - 5555:5555
