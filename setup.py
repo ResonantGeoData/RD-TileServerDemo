@@ -49,6 +49,8 @@ setup(
         'django-composed-configuration[prod]',
         'django-s3-file-field[boto3]',
         'gunicorn',
+        'django-rgd',
+        'django-rgd-imagery',
     ],
     extras_require={
         'dev': [
@@ -57,6 +59,12 @@ setup(
             'django-s3-file-field[minio]',
             'ipython',
             'tox',
-        ]
+        ],
+        'worker': [
+            'django-rgd-imagery[worker]',
+        ],
+        'fuse': [
+            'django-rgd[fuse]>=0.2.2',
+        ],
     },
 )
