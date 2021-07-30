@@ -1,0 +1,94 @@
+<html>
+
+<body>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/geojs/0.20.0/geo.min.js"></script>
+
+  <div id="map" style="width: 100%; height: 100%;"></div>
+
+  <style>
+    .basemapTool {
+      background-color: #DCDCDC;
+      padding: 2px;
+      border: 2px solid #000;
+      text-align: left;
+      border-radius: 10px;
+    }
+  </style>
+
+  <div id="basemapTool" class="basemapTool">
+    <label for="basemapDropdown">Choose a basemap:</label>
+    <select id="basemapDropdown" onChange='changeBasemap();'>
+      <option>osm</option>
+      <option>stamen-terrain</option>
+      <option>stamen-terrain-background</option>
+      <option>nationalmap-satellite</option>
+      <option>stamen-toner</option>
+      <option>stamen-toner-lite</option>
+      <option>wikimedia</option>
+      <option>-- none --</option>
+    </select>
+  </div>
+
+  <script>
+    // Initialize the map
+    let map = geo.map({
+      node: '#map',
+      clampBoundsX: true
+    })
+    var basemapLayer = map.createLayer('osm', {
+      source: 'osm',
+      gcs: 'EPSG:3857' // web mercator
+    });
+
+    // Tile layer for showing rasters/images with large_image
+    var tileLayer = map.createLayer('osm', {
+      keepLower: false,
+      attribution: ''
+    });
+    tileLayer.visible(true)
+
+    // Increase zoom range from default of 16
+    map.zoomRange({
+      min: 0,
+      max: 20,
+    })
+
+    // User Interface layer
+    var ui = map.createLayer('ui');
+
+    // Create a zoom slider widget
+    ui.createWidget('slider', {
+      position: {
+        left: 40,
+        top: 40
+      }
+    });
+    var basemapTool = ui.createWidget('dom', {
+      position: {
+        right: 20,
+        top: 20
+      }
+    });
+    basemapTool.canvas().appendChild(document.getElementById("basemapTool"))
+
+    var basemapDropdown = document.getElementById("basemapDropdown")
+    basemapDropdown.value = basemapLayer.source()
+
+    function changeBasemap() {
+      if (basemapDropdown.value == '-- none --') {
+        basemapLayer.visible(false)
+      } else {
+        basemapLayer.visible(true)
+        basemapLayer.source(basemapDropdown.value)
+      }
+    }
+
+    var host = "http://localhost:8000";
+    var image_id = 1; //Number(selector.value);
+    console.log(image_id)
+    tileLayer.visible(true)
+    tileLayer.url(`${host}/api/image_process/imagery/${image_id}/tiles/{z}/{x}/{y}.png?projection=EPSG:3857`)
+  </script>
+</body>
+
+</html>
