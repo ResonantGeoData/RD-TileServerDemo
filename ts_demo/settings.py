@@ -7,6 +7,7 @@ from typing import Type
 from composed_configuration import (
     ComposedConfiguration,
     ConfigMixin,
+    CorsMixin,
     DevelopmentBaseConfiguration,
     HerokuProductionBaseConfiguration,
     ProductionBaseConfiguration,
@@ -45,7 +46,7 @@ class SwaggerMixin(ConfigMixin):
     DEEP_LINKING = True
 
 
-class TsDemoMixin(GeoDjangoMixin, SwaggerMixin, ConfigMixin):
+class TsDemoMixin(GeoDjangoMixin, SwaggerMixin, CorsMixin, ConfigMixin):
     WSGI_APPLICATION = 'ts_demo.wsgi.application'
     ROOT_URLCONF = 'ts_demo.urls'
 
@@ -53,6 +54,9 @@ class TsDemoMixin(GeoDjangoMixin, SwaggerMixin, ConfigMixin):
 
     RGD_GLOBAL_READ_ACCESS = values.Value(default=False)
     RGD_FILE_FIELD_PREFIX = values.Value(default=None)
+
+    # To use tile endpoints from external origin
+    CORS_ORIGIN_ALLOW_ALL = True
 
     @staticmethod
     def before_binding(configuration: ComposedConfiguration) -> None:
