@@ -76,6 +76,8 @@ class TsDemoMixin(GeoDjangoMixin, SwaggerMixin, CorsMixin, ConfigMixin):
             'rest_framework.authentication.BasicAuthentication'
         )
 
+        configuration.MIDDLEWARE += ('crum.CurrentRequestUserMiddleware',)
+
     # This cannot have a default value, since the password and database name are always
     # set by the service admin
     DATABASES = values.DatabaseURLValue(
